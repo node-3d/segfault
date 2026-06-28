@@ -2,12 +2,12 @@
 
 This is a part of [Node3D](https://github.com/node-3d) project.
 
-[![NPM](https://badge.fury.io/js/segfault-raub.svg)](https://badge.fury.io/js/segfault-raub)
-[![ESLint](https://github.com/node-3d/segfault-raub/actions/workflows/eslint.yml/badge.svg)](https://github.com/node-3d/segfault-raub/actions/workflows/eslint.yml)
-[![Test](https://github.com/node-3d/segfault-raub/actions/workflows/test.yml/badge.svg)](https://github.com/node-3d/segfault-raub/actions/workflows/test.yml)
+[![NPM](https://badge.fury.io/js/%40node-3d%2Fsegfault.svg)](https://badge.fury.io/js/@node-3d/segfault)
+[![Lint](https://github.com/node-3d/segfault/actions/workflows/lint.yml/badge.svg)](https://github.com/node-3d/segfault/actions/workflows/lint.yml)
+[![Test](https://github.com/node-3d/segfault/actions/workflows/test.yml/badge.svg)](https://github.com/node-3d/segfault/actions/workflows/test.yml)
 
 ```
-npm i -s segfault-raub
+npm install @node-3d/segfault
 ```
 
 This module report debug information on process crash (and some other events).
@@ -20,17 +20,17 @@ If there is no such file, it
 
 > Note: this **addon uses N-API**, and therefore is ABI-compatible across different
 Node.js versions. Addon binaries are precompiled and **there is no compilation**
-step during the `npm i` command.
+step during the `npm install` command.
 
-A zero-setup is available: just require the module and it comes pre-equipped with several
+A zero-setup is available: just import the module and it comes pre-equipped with several
 signal listeners enabled by default.
 
 ```js
-require('segfault-raub');
+import '@node-3d/segfault';
 ```
 
 > Note: if your project tree contains multiple versions of this module, the first one imported
-will seize `global['segfault-raub']`. The rest of them will only re-export `global['segfault-raub']`
+will seize `global['@node-3d/segfault']`. The rest of them will only re-export `global['@node-3d/segfault']`
 and **WILL NOT** import their own **binaries**.
 
 ---
@@ -38,12 +38,31 @@ and **WILL NOT** import their own **binaries**.
 If you want to use a custom location instead of "**segfault.log**", use:
 
 ```js
-require('segfault-raub').setLogPath("C:/my/log/file.txt");
+import { setLogPath } from '@node-3d/segfault';
+
+setLogPath('C:/my/log/file.txt');
 ```
 
 **You must create this file first, it must be there when the crash happens.**
 
-See the [TypeScript declarations](/index.d.ts) with comments.
+## API
+
+Configuration:
+
+* `setLogPath(path | null | '')` - set the log file path. Passing `null` or `''`
+  resets it to `segfault.log`.
+* `setSignal(signal, enabled)` - enable or disable a supported signal/exception handler.
+  Passing `null` is safe and has no effect, which is useful for cross-platform code.
+
+Demo crash helpers:
+
+* `causeSegfault()`
+* `causeDivisionInt()`
+* `causeOverflow()`
+* `causeIllegal()`
+
+Constants are platform-specific. Windows exception constants are `null` on Unix-like systems,
+and Unix signal constants are `null` on Windows.
 
 
 ## Configuring Signals
@@ -54,11 +73,12 @@ enabled/disabled manually:
 Example:
 
 ```js
-const {
-    setSignal,
-    EXCEPTION_ACCESS_VIOLATION, SIGSEGV,
-    EXCEPTION_BREAKPOINT, SIGTRAP,
-} = require('segfault-raub');
+import {
+	setSignal,
+	EXCEPTION_ACCESS_VIOLATION, SIGSEGV,
+	EXCEPTION_BREAKPOINT, SIGTRAP,
+	EXCEPTION_ALL,
+} from '@node-3d/segfault';
 
 setSignal(EXCEPTION_ACCESS_VIOLATION, false);
 setSignal(SIGSEGV, false);
@@ -86,7 +106,8 @@ These are be helpful to see how the signals are reported and if the log files ar
 Example:
 
 ```js
-const { causeSegfault } = require('segfault-raub');
+import { causeSegfault } from '@node-3d/segfault';
+
 causeSegfault();
 ```
 

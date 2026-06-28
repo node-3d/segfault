@@ -1,9 +1,6 @@
-'use strict';
+import { install } from '@node-3d/addon-tools';
 
-const { install } = require('addon-tools-raub');
-
-
-const prefix = 'https://github.com/node-3d/segfault-raub/releases/download';
-const tag = '3.2.0';
+const prefix = 'https://github.com/node-3d/segfault/releases/download';
+const tag = '4.0.0';
 
 install(`${prefix}/${tag}`);

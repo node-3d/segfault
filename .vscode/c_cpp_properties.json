@@ -4,9 +4,11 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/src/cpp",
-                "${workspaceFolder}/node_modules/addon-tools-raub/include",
+                "${workspaceFolder}/node_modules/@node-3d/addon-tools/include",
                 "${workspaceFolder}/node_modules/node-addon-api",
-                "${LocalAppData}/node-gyp/Cache/22.14.0/include/node"
+                "${workspaceFolder}/../../node_modules/@node-3d/addon-tools/include",
+                "${workspaceFolder}/../../node_modules/node-addon-api",
+                "${env:LOCALAPPDATA}/node-gyp/Cache/24.13.0/include/node"
             ],
             "defines": [],
             "windowsSdkVersion": "10.0.19041.0",

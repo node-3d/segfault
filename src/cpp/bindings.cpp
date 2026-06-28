@@ -6,6 +6,10 @@
 
 #include "segfault-handler.hpp"
 
+#ifdef _WIN32
+#define EXCEPTION_ALL 0x0
+#endif
+
 
 #define JS_SF_CONSTANT(name)                                                    \
 	exports.Set(#name, static_cast<double>(name));
@@ -30,6 +34,7 @@ Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	JS_SF_SET_METHOD(setLogPath);
 	
 #ifdef _WIN32
+	JS_SF_CONSTANT(EXCEPTION_ALL);
 	JS_SF_CONSTANT(EXCEPTION_ACCESS_VIOLATION);
 	JS_SF_CONSTANT(EXCEPTION_DATATYPE_MISALIGNMENT);
 	JS_SF_CONSTANT(EXCEPTION_BREAKPOINT);
@@ -52,6 +57,7 @@ Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	JS_SF_CONSTANT(EXCEPTION_INVALID_DISPOSITION);
 	JS_SF_CONSTANT(EXCEPTION_GUARD_PAGE);
 	JS_SF_CONSTANT(EXCEPTION_INVALID_HANDLE);
+	JS_SF_CONSTANT(STATUS_STACK_BUFFER_OVERRUN);
 
 	JS_SF_NULL(SIGINT);
 	JS_SF_NULL(SIGILL);
@@ -82,6 +88,7 @@ Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	JS_SF_NULL(SIGWINCH);
 	JS_SF_NULL(SIGSYS);
 #else
+	JS_SF_NULL(EXCEPTION_ALL);
 	JS_SF_NULL(EXCEPTION_ACCESS_VIOLATION);
 	JS_SF_NULL(EXCEPTION_DATATYPE_MISALIGNMENT);
 	JS_SF_NULL(EXCEPTION_BREAKPOINT);
@@ -104,7 +111,8 @@ Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	JS_SF_NULL(EXCEPTION_INVALID_DISPOSITION);
 	JS_SF_NULL(EXCEPTION_GUARD_PAGE);
 	JS_SF_NULL(EXCEPTION_INVALID_HANDLE);
-    
+	JS_SF_NULL(STATUS_STACK_BUFFER_OVERRUN);
+	
 	JS_SF_CONSTANT(SIGINT);
 	JS_SF_CONSTANT(SIGILL);
 	JS_SF_CONSTANT(SIGABRT);
