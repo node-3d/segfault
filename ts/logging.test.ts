@@ -17,13 +17,17 @@ const rm = async (path: string) => {
 const causeSegfault = async (isCustom = false) => {
 	try {
 		if (isCustom) {
-			await exec([
-				'node --input-type=module -e',
-				`"import('./dist/index.js').then((m) => { m.setLogPath('${PATH_CUSTOM}'); m.causeSegfault(); })"`,
-			].join(' '));
+			await exec(
+				[
+					'node --input-type=module -e',
+					`"import('./dist/index.js').then((m) => { m.setLogPath('${PATH_CUSTOM}'); m.causeSegfault(); })"`,
+				].join(' '),
+			);
 			return;
 		}
-		await exec('node --input-type=module -e "import(\'./dist/index.js\').then((m) => m.causeSegfault())"');
+		await exec(
+			'node --input-type=module -e "import(\'./dist/index.js\').then((m) => m.causeSegfault())"',
+		);
 	} catch {
 		// The subprocess is expected to crash.
 	}

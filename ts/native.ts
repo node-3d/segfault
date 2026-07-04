@@ -69,8 +69,7 @@ const globalStore = globalThis as typeof globalThis & {
 	'@node-3d/segfault'?: TNative;
 };
 
-export const native = (
-	globalStore['@node-3d/segfault'] ?? loadAddon(`../${getBin()}/segfault.node`)
-) as TNative;
+export const native = (globalStore['@node-3d/segfault'] ??
+	loadAddon(`../${getBin()}/segfault.node`)) as TNative;
 
 globalStore['@node-3d/segfault'] ??= native;
