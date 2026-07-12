@@ -5,6 +5,7 @@
 .project
 node_modules/
 .rslib/
+.clang-format
 dist/
 src/build/
 bin-*/

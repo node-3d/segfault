@@ -11,28 +11,24 @@
 #endif
 
 
-#define JS_SF_CONSTANT(name)                                                    \
-	exports.Set(#name, static_cast<double>(name));
+#define JS_SF_CONSTANT(name) exports.Set(#name, static_cast<double>(name));
 
-#define JS_SF_NULL(name)                                                        \
-	exports.Set(#name, JS_NULL);
+#define JS_SF_NULL(name) exports.Set(#name, JS_NULL);
 
-#define JS_SF_SET_METHOD(name)                                                  \
-	exports.DefineProperty(                                                     \
-		Napi::PropertyDescriptor::Function(env, exports, #name, segfault::name) \
-	);
+#define JS_SF_SET_METHOD(name)                                                                               \
+	exports.DefineProperty(Napi::PropertyDescriptor::Function(env, exports, #name, segfault::name));
 
 
 Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	segfault::init();
-	
+
 	JS_SF_SET_METHOD(causeSegfault);
 	JS_SF_SET_METHOD(causeDivisionInt);
 	JS_SF_SET_METHOD(causeOverflow);
 	JS_SF_SET_METHOD(causeIllegal);
 	JS_SF_SET_METHOD(setSignal);
 	JS_SF_SET_METHOD(setLogPath);
-	
+
 #ifdef _WIN32
 	JS_SF_CONSTANT(EXCEPTION_ALL);
 	JS_SF_CONSTANT(EXCEPTION_ACCESS_VIOLATION);
@@ -112,7 +108,7 @@ Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	JS_SF_NULL(EXCEPTION_GUARD_PAGE);
 	JS_SF_NULL(EXCEPTION_INVALID_HANDLE);
 	JS_SF_NULL(STATUS_STACK_BUFFER_OVERRUN);
-	
+
 	JS_SF_CONSTANT(SIGINT);
 	JS_SF_CONSTANT(SIGILL);
 	JS_SF_CONSTANT(SIGABRT);
@@ -142,7 +138,7 @@ Napi::Object initModule(Napi::Env env, Napi::Object exports) {
 	JS_SF_CONSTANT(SIGWINCH);
 	JS_SF_CONSTANT(SIGSYS);
 #endif
-	
+
 	return exports;
 }
 

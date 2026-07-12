@@ -5,5 +5,5 @@
 
 
 namespace segfault {
-	DBG_EXPORT void showCallstack(std::ofstream &outfile);
+DBG_EXPORT void showCallstack(std::ofstream &outfile);
 }

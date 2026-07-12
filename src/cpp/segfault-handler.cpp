@@ -27,24 +27,24 @@ char logFilePath[512] = "segfault.log";
 time_t timeInfo;
 
 #ifdef _WIN32
-	constexpr auto GETPID = _getpid;
-	#define SEGFAULT_HANDLER LONG CALLBACK handleSignal(PEXCEPTION_POINTERS info)
-	#define NO_INLINE __declspec(noinline)
-	#define HANDLER_CANCEL return EXCEPTION_CONTINUE_SEARCH
-	#define HANDLER_DONE return EXCEPTION_EXECUTE_HANDLER
+constexpr auto GETPID = _getpid;
+#define SEGFAULT_HANDLER LONG CALLBACK handleSignal(PEXCEPTION_POINTERS info)
+#define NO_INLINE __declspec(noinline)
+#define HANDLER_CANCEL return EXCEPTION_CONTINUE_SEARCH
+#define HANDLER_DONE return EXCEPTION_EXECUTE_HANDLER
 #else
-	constexpr auto GETPID = getpid;
-	#define SEGFAULT_HANDLER static void handleSignal(int sig, siginfo_t *info, void *unused)
-	#define NO_INLINE __attribute__ ((noinline))
-	#define HANDLER_CANCEL return
-	#define HANDLER_DONE return
-	
-	char _altStackBytes[SIGSTKSZ_LOCAL];
-	stack_t _altStack = {
-		_altStackBytes,
-		0,
-		SIGSTKSZ_LOCAL,
-	};
+constexpr auto GETPID = getpid;
+#define SEGFAULT_HANDLER static void handleSignal(int sig, siginfo_t *info, void *unused)
+#define NO_INLINE __attribute__((noinline))
+#define HANDLER_CANCEL return
+#define HANDLER_DONE return
+
+char _altStackBytes[SIGSTKSZ_LOCAL];
+stack_t _altStack = {
+	_altStackBytes,
+	0,
+	SIGSTKSZ_LOCAL,
+};
 #endif
 
 const std::map<uint32_t, std::string> signalNames = {
@@ -76,33 +76,13 @@ const std::map<uint32_t, std::string> signalNames = {
 	{ STATUS_STACK_BUFFER_OVERRUN, "STACK_BUFFER_OVERRUN" },
 //	{ EXCEPTION_POSSIBLE_DEADLOCK, "POSSIBLE_DEADLOCK" },
 #else
-	{ SIGABRT, "SIGABRT" },
-	{ SIGFPE, "SIGFPE" },
-	{ SIGSEGV, "SIGSEGV" },
-	{ SIGTERM, "SIGTERM" },
-	{ SIGILL, "SIGILL" },
-	{ SIGINT, "SIGINT" },
-	{ SIGALRM, "SIGALRM" },
-	{ SIGBUS, "SIGBUS" },
-	{ SIGCHLD, "SIGCHLD" },
-	{ SIGCONT, "SIGCONT" },
-	{ SIGHUP, "SIGHUP" },
-	{ SIGKILL, "SIGKIL" },
-	{ SIGPIPE, "SIGPIPE" },
-	{ SIGQUIT, "SIGQUIT" },
-	{ SIGSTOP, "SIGSTOP" },
-	{ SIGTSTP, "SIGTSTP" },
-	{ SIGTTIN, "SIGTTIN" },
-	{ SIGTTOU, "SIGTTOU" },
-	{ SIGUSR1, "SIGUSR1" },
-	{ SIGUSR2, "SIGUSR2" },
-	{ SIGPROF, "SIGPROF" },
-	{ SIGSYS, "SIGSYS" },
-	{ SIGTRAP, "SIGTRAP" },
-	{ SIGURG, "SIGURG" },
-	{ SIGVTALRM, "SIGVTALRM" },
-	{ SIGXCPU, "SIGXCPU" },
-	{ SIGXFSZ, "SIGXFSZ" },
+	{ SIGABRT, "SIGABRT" },     { SIGFPE, "SIGFPE" },   { SIGSEGV, "SIGSEGV" }, { SIGTERM, "SIGTERM" },
+	{ SIGILL, "SIGILL" },       { SIGINT, "SIGINT" },   { SIGALRM, "SIGALRM" }, { SIGBUS, "SIGBUS" },
+	{ SIGCHLD, "SIGCHLD" },     { SIGCONT, "SIGCONT" }, { SIGHUP, "SIGHUP" },   { SIGKILL, "SIGKIL" },
+	{ SIGPIPE, "SIGPIPE" },     { SIGQUIT, "SIGQUIT" }, { SIGSTOP, "SIGSTOP" }, { SIGTSTP, "SIGTSTP" },
+	{ SIGTTIN, "SIGTTIN" },     { SIGTTOU, "SIGTTOU" }, { SIGUSR1, "SIGUSR1" }, { SIGUSR2, "SIGUSR2" },
+	{ SIGPROF, "SIGPROF" },     { SIGSYS, "SIGSYS" },   { SIGTRAP, "SIGTRAP" }, { SIGURG, "SIGURG" },
+	{ SIGVTALRM, "SIGVTALRM" }, { SIGXCPU, "SIGXCPU" }, { SIGXFSZ, "SIGXFSZ" },
 #endif
 };
 
@@ -134,38 +114,17 @@ std::map<uint32_t, bool> signalActivity = {
 	{ STATUS_STACK_BUFFER_OVERRUN, false },
 //	{ EXCEPTION_POSSIBLE_DEADLOCK, false },
 #else
-	{ SIGABRT, true },
-	{ SIGFPE, true },
-	{ SIGSEGV, true },
-	{ SIGILL, true },
-	{ SIGBUS, true },
-	{ SIGTERM, false },
-	{ SIGINT, false },
-	{ SIGALRM, false },
-	{ SIGCHLD, false },
-	{ SIGCONT, false },
-	{ SIGHUP, false },
-	{ SIGKILL, false },
-	{ SIGPIPE, false },
-	{ SIGQUIT, false },
-	{ SIGSTOP, false },
-	{ SIGTSTP, false },
-	{ SIGTTIN, false },
-	{ SIGTTOU, false },
-	{ SIGUSR1, false },
-	{ SIGUSR2, false },
-	{ SIGPROF, false },
-	{ SIGSYS, false },
-	{ SIGTRAP, false },
-	{ SIGURG, false },
-	{ SIGVTALRM, false },
-	{ SIGXCPU, false },
-	{ SIGXFSZ, false },
+	{ SIGABRT, true },  { SIGFPE, true },   { SIGSEGV, true },  { SIGILL, true },   { SIGBUS, true },
+	{ SIGTERM, false }, { SIGINT, false },  { SIGALRM, false }, { SIGCHLD, false }, { SIGCONT, false },
+	{ SIGHUP, false },  { SIGKILL, false }, { SIGPIPE, false }, { SIGQUIT, false }, { SIGSTOP, false },
+	{ SIGTSTP, false }, { SIGTTIN, false }, { SIGTTOU, false }, { SIGUSR1, false }, { SIGUSR2, false },
+	{ SIGPROF, false }, { SIGSYS, false },  { SIGTRAP, false }, { SIGURG, false },  { SIGVTALRM, false },
+	{ SIGXCPU, false }, { SIGXFSZ, false },
 #endif
 };
 
 
-inline bool _checkFileExists(const char* path) {
+inline bool _checkFileExists(const char *path) {
 	std::ifstream infile(path);
 	return infile.good();
 }
@@ -174,14 +133,13 @@ inline bool _checkFileExists(const char* path) {
 static inline bool _isSignalEnabled(uint32_t signalId) {
 	return (
 #ifdef _WIN32
-		signalActivity[EXCEPTION_ALL] || (
+	    signalActivity[EXCEPTION_ALL] ||
+	    (
 #else
-		(
+	    (
 #endif
-			signalNames.count(signalId) &&
-			signalActivity.count(signalId) &&
-			signalActivity[signalId]
-		)
+	        signalNames.count(signalId) && signalActivity.count(signalId) && signalActivity[signalId]
+	    )
 	);
 }
 
@@ -207,14 +165,14 @@ static inline void _writeStackTrace(std::ofstream &outfile, uint32_t signalId) {
 	if (!outfile.is_open()) {
 		return;
 	}
-	
+
 	outfile.close();
 	void *array[32];
 	size_t size = backtrace(array, 32);
-	
+
 	constexpr int STDERR_FD = 2;
 	backtrace_symbols_fd(array, size, STDERR_FD);
-	
+
 	int fd = open(logFilePath, O_CREAT | O_APPEND | O_WRONLY, S_IRUSR | S_IRGRP | S_IROTH);
 	if (fd > 0) {
 		backtrace_symbols_fd(array, size, fd);
@@ -226,16 +184,15 @@ static inline void _writeStackTrace(std::ofstream &outfile, uint32_t signalId) {
 
 static inline std::ofstream _openLogFile() {
 	std::ofstream outfile;
-	
+
 	if (!_checkFileExists(logFilePath)) {
-		std::cerr
-			<< "SegfaultHandler: The exception won't be logged into a file"
-			<< ", unless 'segfault.log' exists." << std::endl;
+		std::cerr << "SegfaultHandler: The exception won't be logged into a file"
+		          << ", unless 'segfault.log' exists." << std::endl;
 		return outfile;
 	}
-	
+
 	outfile.open(logFilePath, std::ofstream::app);
-	
+
 	return outfile;
 }
 
@@ -243,9 +200,9 @@ static inline void _writeTimeToFile(std::ofstream &outfile) {
 	if (!outfile.is_open()) {
 		return;
 	}
-	
+
 	time(&timeInfo);
-	
+
 	outfile << "\n\nAt " << ctime(&timeInfo) << std::endl; // NOLINT
 	if (outfile.bad()) {
 		std::cerr << "SegfaultHandler: Error writing to file." << std::endl;
@@ -259,20 +216,19 @@ static inline void _writeHeaderToOstream(std::ostream &stream, int pid, uint32_t
 	} else {
 		signalName = std::to_string(signalId);
 	}
-	stream
-		<< "\nPID " << pid << " received " << signalName
-		<< " for address: 0x" << std::hex << address << std::endl;
+	stream << "\nPID " << pid << " received " << signalName << " for address: 0x" << std::hex << address
+	       << std::endl;
 }
 
 
 static inline void _writeLogHeader(std::ofstream &outfile, uint32_t signalId, uint64_t address) {
 	int pid = GETPID();
 	_writeHeaderToOstream(std::cerr, pid, signalId, address);
-	
+
 	if (!outfile.is_open()) {
 		return;
 	}
-	
+
 	_writeHeaderToOstream(outfile, pid, signalId, address);
 	if (outfile.bad()) {
 		std::cerr << "SegfaultHandler: Error writing to file." << std::endl;
@@ -290,26 +246,26 @@ DBG_EXPORT SEGFAULT_HANDLER {
 	auto signalAndAdress = _getSignalAndAddress(info);
 	uint32_t signalId = signalAndAdress.first;
 	uint64_t address = signalAndAdress.second;
-	
+
 	if (!_isSignalEnabled(signalId)) {
 		HANDLER_CANCEL;
 	}
-	
+
 	std::ofstream outfile = _openLogFile();
-	
+
 	_writeTimeToFile(outfile);
 	_writeLogHeader(outfile, signalId, address);
 	_writeStackTrace(outfile, signalId);
-	
+
 	_closeLogFile(outfile);
-	
+
 	HANDLER_DONE;
 }
 
 
 // create some stack frames to inspect from CauseSegfault
 DBG_EXPORT NO_INLINE void _segfaultStackFrame1() {
-	int *foo = reinterpret_cast<int*>(1);
+	int *foo = reinterpret_cast<int *>(1);
 	*foo = 42; // triggers a segfault exception
 }
 
@@ -319,7 +275,8 @@ DBG_EXPORT NO_INLINE void _segfaultStackFrame2(void) {
 }
 
 
-DBG_EXPORT JS_METHOD(causeSegfault) { NAPI_ENV;
+DBG_EXPORT JS_METHOD(causeSegfault) {
+	NAPI_ENV;
 	std::cout << "SegfaultHandler: about to cause a segfault..." << std::endl;
 	void (*fn_ptr)() = _segfaultStackFrame2;
 	fn_ptr();
@@ -333,7 +290,8 @@ DBG_EXPORT NO_INLINE void _divideInt() {
 }
 
 
-DBG_EXPORT JS_METHOD(causeDivisionInt) { NAPI_ENV;
+DBG_EXPORT JS_METHOD(causeDivisionInt) {
+	NAPI_ENV;
 	_divideInt();
 	RET_UNDEFINED;
 }
@@ -349,14 +307,16 @@ DBG_EXPORT NO_INLINE void _overflowStack() {
 	_overflowStack(); // infinite recursion
 }
 
-DBG_EXPORT JS_METHOD(causeOverflow) { NAPI_ENV;
+DBG_EXPORT JS_METHOD(causeOverflow) {
+	NAPI_ENV;
 	std::cout << "SegfaultHandler: about to overflow the stack..." << std::endl;
 	_overflowStack();
 	RET_UNDEFINED;
 }
 
 
-DBG_EXPORT JS_METHOD(causeIllegal) { NAPI_ENV;
+DBG_EXPORT JS_METHOD(causeIllegal) {
+	NAPI_ENV;
 	std::cout << "SegfaultHandler: about to raise an illegal operation..." << std::endl;
 #ifdef _WIN32
 	RaiseException(EXCEPTION_ILLEGAL_INSTRUCTION, 0, 0, nullptr);
@@ -368,84 +328,86 @@ DBG_EXPORT JS_METHOD(causeIllegal) { NAPI_ENV;
 
 
 static inline void _enableSignal(uint32_t signalId) {
-	#ifndef _WIN32
-		struct sigaction action;
-		memset(&action, 0, sizeof(struct sigaction));
-		sigemptyset(&action.sa_mask);
-		action.sa_sigaction = handleSignal;
-		
-		if (signalId == SIGSEGV) {
-			action.sa_flags = SA_SIGINFO | SA_ONSTACK | SA_RESETHAND;
-		} else {
-			action.sa_flags = SA_SIGINFO | SA_RESETHAND;
-		}
-		
-		sigaction(signalId, &action, NULL);
-	#endif
+#ifndef _WIN32
+	struct sigaction action;
+	memset(&action, 0, sizeof(struct sigaction));
+	sigemptyset(&action.sa_mask);
+	action.sa_sigaction = handleSignal;
+
+	if (signalId == SIGSEGV) {
+		action.sa_flags = SA_SIGINFO | SA_ONSTACK | SA_RESETHAND;
+	} else {
+		action.sa_flags = SA_SIGINFO | SA_RESETHAND;
+	}
+
+	sigaction(signalId, &action, NULL);
+#endif
 }
 
 static inline void _disableSignal(uint32_t signalId) {
-	#ifndef _WIN32
-		signal(signalId, SIG_DFL);
-	#endif
+#ifndef _WIN32
+	signal(signalId, SIG_DFL);
+#endif
 }
 
 
-DBG_EXPORT JS_METHOD(setSignal) { NAPI_ENV;
+DBG_EXPORT JS_METHOD(setSignal) {
+	NAPI_ENV;
 	if (IS_ARG_EMPTY(0)) {
 		RET_UNDEFINED;
 	}
-	
+
 	LET_INT32_ARG(0, signalId);
 	LET_BOOL_ARG(1, value);
-	
+
 	if (!signalNames.count(signalId)) {
 		RET_UNDEFINED;
 	}
-	
+
 	bool wasEnabled = signalActivity[signalId];
 	if (wasEnabled == value) {
 		RET_UNDEFINED;
 	}
-	
+
 	signalActivity[signalId] = value;
 	if (value) {
 		_enableSignal(signalId);
 	} else {
 		_disableSignal(signalId);
 	}
-	
+
 	RET_UNDEFINED;
 }
 
-DBG_EXPORT JS_METHOD(setLogPath) { NAPI_ENV;
+DBG_EXPORT JS_METHOD(setLogPath) {
+	NAPI_ENV;
 	LET_STR_ARG(0, path);
-	
+
 	if (!path.length()) {
 		snprintf(logFilePath, sizeof(logFilePath), "%s", "segfault.log");
 		RET_UNDEFINED;
 	}
-	
+
 	snprintf(logFilePath, sizeof(logFilePath), "%s", path.c_str());
 	RET_UNDEFINED;
 }
 
 
 DBG_EXPORT void init() {
-	// On Windows, a single handler is set on startup.
-	// On Unix, handlers for every signal are set on-demand.
-	#ifdef _WIN32
-		SetUnhandledExceptionFilter(handleSignal);
-	#endif
-	
-	// `SetThreadStackGuarantee` and `sigaltstack` help in handling stack overflows on their platforms.
-	#ifdef _WIN32
-		ULONG size = 32 * 1024;
-		SetThreadStackGuarantee(&size);
-	#else
-		sigaltstack(&_altStack, nullptr);
-	#endif
-	
+// On Windows, a single handler is set on startup.
+// On Unix, handlers for every signal are set on-demand.
+#ifdef _WIN32
+	SetUnhandledExceptionFilter(handleSignal);
+#endif
+
+// `SetThreadStackGuarantee` and `sigaltstack` help in handling stack overflows on their platforms.
+#ifdef _WIN32
+	ULONG size = 32 * 1024;
+	SetThreadStackGuarantee(&size);
+#else
+	sigaltstack(&_altStack, nullptr);
+#endif
+
 	for (auto pair : signalActivity) {
 		if (pair.second) {
 			_enableSignal(pair.first);
