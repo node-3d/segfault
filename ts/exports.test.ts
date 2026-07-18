@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { getPlatform } from '@node-3d/addon-tools';
 import * as Segfault from './index.ts';
 
 const signalsWindows = [
@@ -71,7 +70,7 @@ describe('Segfault', () => {
 		assert.strictEqual(typeof Segfault.setLogPath, 'function');
 	});
 
-	for (const name of getPlatform() === 'windows' ? signalsWindows : signalsUnix) {
+	for (const name of process.platform === 'win32' ? signalsWindows : signalsUnix) {
 		it(`contains the \`${name}\` constant`, () => {
 			assert.strictEqual(typeof Segfault[name as keyof typeof Segfault], 'number');
 		});
