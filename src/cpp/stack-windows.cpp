@@ -432,6 +432,15 @@ static inline void _iterateFrames(std::ofstream &outfile) {
 	STACKFRAME64 s;
 	memset(&s, 0, sizeof(s));
 	DWORD imageType;
+#if defined(_M_ARM64) || defined(__aarch64__)
+	imageType = IMAGE_FILE_MACHINE_ARM64;
+	s.AddrPC.Offset = ctx.Pc;
+	s.AddrPC.Mode = AddrModeFlat;
+	s.AddrFrame.Offset = ctx.Fp;
+	s.AddrFrame.Mode = AddrModeFlat;
+	s.AddrStack.Offset = ctx.Sp;
+	s.AddrStack.Mode = AddrModeFlat;
+#elif defined(_M_X64) || defined(__x86_64__)
 	imageType = IMAGE_FILE_MACHINE_AMD64;
 	s.AddrPC.Offset = ctx.Rip;
 	s.AddrPC.Mode = AddrModeFlat;
@@ -439,6 +448,9 @@ static inline void _iterateFrames(std::ofstream &outfile) {
 	s.AddrFrame.Mode = AddrModeFlat;
 	s.AddrStack.Offset = ctx.Rsp;
 	s.AddrStack.Mode = AddrModeFlat;
+#else
+#error Unsupported Windows architecture
+#endif
 
 	CallstackEntry csEntry;
 
