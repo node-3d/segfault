@@ -42,7 +42,7 @@ const formatExecFailure = (command: string, error: unknown) => {
 };
 
 const runAndGetError = async (name: string) => {
-	const command = `node --input-type=module -e "import('./dist/index.js').then((m) => m.${name}())"`;
+	const command = `node --input-type=module -e "import('./ts/index.ts').then((m) => m.${name}())"`;
 	try {
 		const { stderr, stdout } = await exec(command);
 		return [

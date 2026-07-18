@@ -20,13 +20,13 @@ const causeSegfault = async (isCustom = false) => {
 			await exec(
 				[
 					'node --input-type=module -e',
-					`"import('./dist/index.js').then((m) => { m.setLogPath('${PATH_CUSTOM}'); m.causeSegfault(); })"`,
+					`"import('./ts/index.ts').then((m) => { m.setLogPath('${PATH_CUSTOM}'); m.causeSegfault(); })"`,
 				].join(' '),
 			);
 			return;
 		}
 		await exec(
-			'node --input-type=module -e "import(\'./dist/index.js\').then((m) => m.causeSegfault())"',
+			'node --input-type=module -e "import(\'./ts/index.ts\').then((m) => m.causeSegfault())"',
 		);
 	} catch {
 		// The subprocess is expected to crash.
