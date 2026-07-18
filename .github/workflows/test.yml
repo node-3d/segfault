@@ -22,6 +22,10 @@ jobs:
             os: windows-2022
             node_arch: x64
             archflags: ''
+          - target: windows-arm64
+            os: windows-11-arm
+            node_arch: arm64
+            archflags: ''
           - target: linux-x64
             os: ubuntu-22.04
             node_arch: x64
