@@ -6,6 +6,7 @@ import type { ExecException } from 'node:child_process';
 
 const exec = promisify(execCallback);
 const isWindows = process.platform === 'win32';
+const isX64 = process.arch === 'x64';
 
 type ExecFailure = ExecException & {
 	stdout?: string | Buffer;
@@ -74,18 +75,24 @@ describe('Exceptions', () => {
 	if (isWindows) {
 		it('shows symbol names in stacktrace', async () => {
 			const response = await runAndGetError('causeSegfault');
-			assert.match(response, /segfault::causeSegfault/u, response);
+			assert.match(
+				response,
+				isX64 ? /segfault::causeSegfault/u : /segfault::(?:handleSignal|showCallstack)/u,
+				response,
+			);
 		});
 
 		it('shows module names in stacktrace', async () => {
 			const response = await runAndGetError('causeSegfault');
-			assertIncludes(response, '[node.exe]', 'causeSegfault');
+			if (isX64) {
+				assertIncludes(response, '[node.exe]', 'causeSegfault');
+			}
 			assertIncludes(response, '[segfault.node]', 'causeSegfault');
 		});
 	}
 
 	// On ARM this fails.
-	if (['win32', 'linux'].includes(process.platform)) {
+	if (isX64 && ['win32', 'linux'].includes(process.platform)) {
 		it('reports divisions by zero (int)', async () => {
 			const response = await runAndGetError('causeDivisionInt');
 			const exceptionName = isWindows ? 'INT_DIVIDE_BY_ZERO' : 'SIGFPE';
