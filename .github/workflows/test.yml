@@ -22,27 +22,22 @@ jobs:
             os: windows-2022
             node_arch: x64
             archflags: ''
-            run_tests: true
           - target: linux-x64
             os: ubuntu-22.04
             node_arch: x64
             archflags: ''
-            run_tests: true
           - target: linux-arm64
             os: ubuntu-22.04-arm
             node_arch: arm64
             archflags: ''
-            run_tests: true
           - target: darwin-x64
             os: macos-26
             node_arch: x64
             archflags: '-arch x86_64'
-            run_tests: false
           - target: darwin-arm64
             os: macos-26
             node_arch: arm64
             archflags: '-arch arm64'
-            run_tests: true
 
     runs-on: ${{ matrix.os }}
 
@@ -76,9 +71,4 @@ jobs:
           ARCHFLAGS: ${{ matrix.archflags }}
 
       - name: Run Unit Tests
-        if: matrix.run_tests
         run: npm run test:ci
-
-      - name: Skip Cross-Architecture Runtime Tests
-        if: ${{ !matrix.run_tests }}
-        run: echo "Built ${{ matrix.target }} on ${{ matrix.os }}; runtime tests are skipped for this cross-architecture target."
