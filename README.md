@@ -10,18 +10,7 @@ This is a part of [Node3D](https://github.com/node-3d) project.
 npm install @node-3d/segfault
 ```
 
-## Binary Origin
 
-Release archives are built by this repository's public GitHub Actions workflows.
-
-Attestations: https://github.com/node-3d/segfault/attestations
-
-To verify a downloaded archive:
-
-```bash
-gh release download <tag> -R node-3d/segfault -p <platform>.gz
-gh attestation verify <platform>.gz -R node-3d/segfault
-```
 
 This module report debug information on process crash (and some other events).
 It doesn't affect the performance while the program is running normally.
@@ -202,3 +191,16 @@ Also this project uses [callstack walker](https://github.com/JochenKalmbach/Stac
 which is licensed under BSD-2 Clause.
 
 The rest of this package (the newly introduced files) is licensed under MIT.
+
+## Binary Origin
+
+Release archives are built by this repository's public GitHub Actions workflows.
+
+Attestations: https://github.com/node-3d/segfault/attestations
+
+To verify a downloaded archive:
+
+```bash
+gh release download <tag> -R node-3d/segfault -p <platform>.gz
+gh attestation verify <platform>.gz -R node-3d/segfault
+```
