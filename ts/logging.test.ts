@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { exec as execCallback } from 'node:child_process';
 import { exists } from '@node-3d/addon-tools';
 
+// oxlint-disable-next-line typescript/strict-void-return
 const exec = promisify(execCallback);
 
 const PATH_STD = `${import.meta.dirname.replaceAll('\\', '/')}/../segfault.log`;

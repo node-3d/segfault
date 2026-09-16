@@ -4,6 +4,7 @@ import { promisify } from 'node:util';
 import { exec as execCallback } from 'node:child_process';
 import type { ExecException } from 'node:child_process';
 
+// oxlint-disable-next-line typescript/strict-void-return
 const exec = promisify(execCallback);
 const isWindows = process.platform === 'win32';
 const isX64 = process.arch === 'x64';
@@ -29,8 +30,7 @@ const formatExecFailure = (command: string, error: unknown) => {
 
 	const failure = error as ExecFailure;
 	const code = failure.code === undefined ? '<unset>' : String(failure.code);
-	const signal =
-		failure.signal === undefined || failure.signal === null ? '<unset>' : failure.signal;
+	const signal = failure.signal ?? '<unset>';
 
 	return [
 		`command: ${command}`,
