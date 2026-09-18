@@ -21,11 +21,10 @@
 		"dist",
 		"install.js",
 		"LICENSE",
-		"LICENSE_node-segfault-handler",
-		"package.json",
-		"tsconfig.json"
+		"LICENSE_node-segfault-handler"
 	],
 	"scripts": {
+		"i": "npm install --workspaces=false",
 		"postinstall": "node install.js",
 		"build:rebuild": "cd src && node-gyp rebuild -j max --silent && node -e \"import('@node-3d/addon-tools').then((m) => m.cpbin('segfault'))\"",
 		"build:compile": "cd src && node-gyp build -j max --silent && node -e \"import('@node-3d/addon-tools').then((m) => m.cpbin('segfault'))\"",
