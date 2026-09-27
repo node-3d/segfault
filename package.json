@@ -54,13 +54,13 @@
 		"@node-3d/addon-tools": "~10.1.0"
 	},
 	"devDependencies": {
-		"@rslib/core": "1.0.0",
-		"@types/node": "24.13.2",
-		"clang-format-node": "3.0.7",
+		"@rslib/core": "1.0.2",
+		"@types/node": "24.19.0",
+		"clang-format-node": "4.0.1",
 		"node-addon-api": "8.9.2",
-		"oxfmt": "0.66.0",
-		"oxlint": "1.81.0",
-		"oxlint-tsgolint": "7.0.2001",
+		"oxfmt": "0.70.0",
+		"oxlint": "1.85.0",
+		"oxlint-tsgolint": "7.0.2003",
 		"tslib": "2.8.1",
 		"typescript": "7.0.2"
 	},
