@@ -17,49 +17,26 @@ permissions:
   attestations: write
 
 jobs:
-  create_release:
-    name: Create Release
+  package:
+    name: Pack npm Candidate
     runs-on: ubuntu-latest
-
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-
     steps:
-
-      - name: Fetch Repository
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24.13.0
-          cache: 'npm'
-
-      - name: Get Package Version
-        id: package-version
-        run: |
-          release_tag="${{ inputs.release_tag }}"
-          if [ -z "$release_tag" ]; then
-            release_tag="$(node -p "require('./package').version")"
-          fi
-          echo "version=$release_tag" >> "$GITHUB_OUTPUT"
-
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.package-version.outputs.version }}
-          name: Release ${{ steps.package-version.outputs.version }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Store npm Candidate
+        uses: node-3d/addon-tools/actions/npm-candidate-upload@b40c5ff9d096be46c9e573382e93149256a33a9a
 
   build:
     name: Build (${{ matrix.target }})
     strategy:
       fail-fast: false
-      matrix:
+      matrix: &native-matrix
         include:
           - target: windows-x64
             os: windows-2022
@@ -116,6 +93,45 @@ jobs:
         env:
           ARCHFLAGS: ${{ matrix.archflags }}
 
+      - name: Store Native Candidate
+        uses: node-3d/addon-tools/actions/native-candidate-upload@b40c5ff9d096be46c9e573382e93149256a33a9a
+        with:
+          artifact-name: native-${{ matrix.target }}
+
+  consumer-tests:
+    name: Packed Consumer (${{ matrix.target }})
+    needs: [package, build]
+    strategy:
+      fail-fast: false
+      matrix: *native-matrix
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.13.0
+          architecture: ${{ matrix.node_arch }}
+      - name: Install Packed Consumer Candidate
+        id: consumer
+        uses: node-3d/addon-tools/actions/consumer-install@b40c5ff9d096be46c9e573382e93149256a33a9a
+        with:
+          package-name: '@node-3d/segfault'
+          binary-artifact: native-${{ matrix.target }}
+          fixture: test-consumer
+      - name: Run Packed Consumer Tests
+        working-directory: ${{ steps.consumer.outputs.directory }}
+        run: npm test
+
+  release:
+    name: Create Release
+    needs: consumer-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Get Package Version
         id: package-version
         run: |
@@ -124,21 +140,21 @@ jobs:
             release_tag="$(node -p "require('./package').version")"
           fi
           echo "version=$release_tag" >> "$GITHUB_OUTPUT"
-
-      - name: Pack Files
-        id: pack-files
-        run: node -e "import('@node-3d/addon-tools').then((m) => m.actionPack())" >> $GITHUB_OUTPUT
-
-      - name: Attest Binary
+      - name: Download Native Candidates
+        uses: actions/download-artifact@v8
+        with:
+          pattern: native-*
+          path: release-candidates
+          merge-multiple: true
+      - name: Attest Binaries
         uses: actions/attest@v4
         with:
-          subject-path: ${{ steps.pack-files.outputs.pack }}
-
-      - name: Store Binaries
+          subject-path: release-candidates/*.gz
+      - name: Create Release
         uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.package-version.outputs.version }}
           name: Release ${{ steps.package-version.outputs.version }}
-          files: ${{ steps.pack-files.outputs.pack }}
+          files: release-candidates/*.gz
