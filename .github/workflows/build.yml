@@ -30,7 +30,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - name: Store npm Candidate
-        uses: node-3d/addon-tools/actions/npm-candidate-upload@b40c5ff9d096be46c9e573382e93149256a33a9a
+        uses: node-3d/addon-tools/actions/npm-candidate-upload@1073c0a6403f6c20df2135f03950a568e865aa16
 
   build:
     name: Build (${{ matrix.target }})
@@ -94,7 +94,7 @@ jobs:
           ARCHFLAGS: ${{ matrix.archflags }}
 
       - name: Store Native Candidate
-        uses: node-3d/addon-tools/actions/native-candidate-upload@b40c5ff9d096be46c9e573382e93149256a33a9a
+        uses: node-3d/addon-tools/actions/native-candidate-upload@1073c0a6403f6c20df2135f03950a568e865aa16
         with:
           artifact-name: native-${{ matrix.target }}
 
@@ -115,7 +115,7 @@ jobs:
           architecture: ${{ matrix.node_arch }}
       - name: Install Packed Consumer Candidate
         id: consumer
-        uses: node-3d/addon-tools/actions/consumer-install@b40c5ff9d096be46c9e573382e93149256a33a9a
+        uses: node-3d/addon-tools/actions/consumer-install@1073c0a6403f6c20df2135f03950a568e865aa16
         with:
           package-name: '@node-3d/segfault'
           binary-artifact: native-${{ matrix.target }}
