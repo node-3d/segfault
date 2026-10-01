@@ -26,8 +26,8 @@
 	"scripts": {
 		"i": "npm install --workspaces=false",
 		"postinstall": "node install.js",
-		"build:rebuild": "cd src && node-gyp rebuild -j max --silent && node -e \"import('@node-3d/addon-tools').then((m) => m.cpbin('segfault'))\"",
-		"build:compile": "cd src && node-gyp build -j max --silent && node -e \"import('@node-3d/addon-tools').then((m) => m.cpbin('segfault'))\"",
+		"build:rebuild": "cd src && node-gyp rebuild -j max && node -e \"import('@node-3d/addon-tools').then((m) => m.cpbin('segfault'))\"",
+		"build:compile": "cd src && node-gyp build -j max && node -e \"import('@node-3d/addon-tools').then((m) => m.cpbin('segfault'))\"",
 		"test:watch": "node --test --watch \"ts/**/*.test.ts\"",
 		"test:ci": "node --test \"ts/**/*.test.ts\"",
 		"lint:all": "npm run lint:gypi && npm run lint:ts && npm run lint:ts:consumer && npm run lint:oxlint",
@@ -59,6 +59,7 @@
 		"@types/node": "24.19.0",
 		"clang-format-node": "4.0.1",
 		"node-addon-api": "8.9.2",
+		"node-gyp": "12.4.0",
 		"oxfmt": "0.70.0",
 		"oxlint": "1.85.0",
 		"oxlint-tsgolint": "7.0.2003",
