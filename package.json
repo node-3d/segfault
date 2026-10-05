@@ -1,7 +1,7 @@
 {
 	"author": "Luis Blanco <luisblanco1337@gmail.com>",
 	"name": "@node-3d/segfault",
-	"version": "4.0.2",
+	"version": "4.0.3",
 	"description": "Catches SIGSEGV and prints diagnostic information",
 	"main": "dist/index.js",
 	"license": "MIT",
